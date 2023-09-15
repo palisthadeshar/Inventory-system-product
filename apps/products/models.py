@@ -8,9 +8,9 @@ from apps.products.constant import (
 from utils.models import CommonInfo
 from apps.store.models import Warehouse
 from apps.accounts.models import User
-from django.contrib.auth import get_user_model
-
 from utils.threads import get_request
+
+
 # Create your models here.
 class Brand(CommonInfo):
     brand_name = models.CharField(max_length=30)
@@ -60,10 +60,7 @@ class Product(CommonInfo):
     price_difference_in_warehouse = models.BooleanField(default=True)
     warehouse = models.ManyToManyField(Warehouse)
     user = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null = True,
-        related_name="product_user"
+        User, on_delete=models.SET_NULL, null=True, related_name="product_user"
     )
     has_expiry_date = models.BooleanField(default=True)
     add_promotional_sale = models.BooleanField(default=True)
@@ -73,14 +70,11 @@ class Product(CommonInfo):
     def save(self, *args, **kwargs):
         current_user = get_request().user
         self.user = current_user
-        self.created_by  =current_user
+        self.created_by = current_user
         super(Product, self).save(*args, **kwargs)
-        
 
     def __str__(self) -> str:
-        return self.created_by.full_name 
-    
-    
+        return self.created_by.full_name
 
 
 class Barcode(CommonInfo):

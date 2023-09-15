@@ -6,7 +6,7 @@ class WarehouseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Warehouse
         fields = ('id',
-                    'name',
+                  'name',
                   'phone',
                   'email',
                   'country',

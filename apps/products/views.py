@@ -7,15 +7,12 @@ from apps.products.serializers import (
     ProductSerializer,
     GETProductSerializer,
     UnitSerializer,
-    BarcodeSerializer,
     GetCategorySeralizer,
     GetUnitSeralizer,
     GetBrandSeralizer,
 )
-from apps.accounts.serializers import UserSerializer
-from rest_framework import serializers
+from apps.store.models import Warehouse
 from apps.products.pagination import Pagination
-from rest_framework.permissions import BasePermission
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.response import Response
@@ -27,6 +24,7 @@ from rest_framework.permissions import (
     IsAdminUser,
     IsAuthenticated,
 )
+
 
 # Create your views here.
 
@@ -120,11 +118,28 @@ class ProductViewSet(ModelViewSet):
         except:
             return [permission() for permission in self.permission_classes]
 
+    def create_or_update_warehouse(self, warehouses):
+        warehouse_ids = []
+        # print(warehouses)
+        for warehouse in warehouses:
+            warehouse_instance, created = Warehouse.objects.update_or_create(
+                id=warehouse.get("id"), defaults=warehouse
+            )
+            warehouse_ids.append(warehouse_instance.id)
+        return warehouse_ids
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        warehouse_data = request.data.pop("warehouse")
+        warehouse = self.create_or_update_warehouse(warehouse_data)
+        instance.warehouse.set(warehouse)
+        serializer = ProductSerializer(instance)
+        return Response(serializer.data)
+
     def get_serializer_class(self):
         if self.action == "retrieve":
             return GETProductSerializer
         return super().get_serializer_class()
-
 
 
 class BarcodeViewset(ModelViewSet):

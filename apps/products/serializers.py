@@ -34,7 +34,7 @@ class UnitSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    warehouse = WarehouseSerializer(many=True, read_only=False)
+    warehouse = WarehouseSerializer(many=True)
 
     class Meta:
         model = Product
@@ -64,6 +64,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "has_imie_code",
         )
 
+
     def create(self, validated_data):
         warehouses_data = validated_data.pop("warehouse")
         product = Product.objects.create(**validated_data)
@@ -73,17 +74,7 @@ class ProductSerializer(serializers.ModelSerializer):
             product.warehouse.add(warehouses)
 
         return product
-
-    def update(self, instance, validated_data):
-        warehouse_ids = validated_data.pop('warehouse', None)
-        import pdb
-        pdb.set_trace()
-        if warehouse_ids:
-            product = Product.objects.get(id=validated_data.get("id"))
-            instance.warehouse.add(warehouse_ids)
-
-        return super().update(instance, validated_data)
-
+    
 
 class BarcodeSerializer(serializers.ModelSerializer):
     class Meta:
