@@ -83,6 +83,51 @@ class BillerSerializer(serializers.ModelSerializer):
             "biller_code"
         )
 
+# class SupplierOnlyListSerializer(serializers.PrimaryKeyRelatedField):
+#     queryset = User.objects.filter(role = "Supplier")
+    
+# class SupplierSerializer(serializers.ModelSerializer):
+#     user = SupplierOnlyListSerializer(write_only = True)
+#     class Meta:
+#         model = Supplier
+#         fields = [
+#             "id",
+#             "user",
+#             "supplier_code",
+#             "company",
+#         ]
+
+# class CustomerOnlyList(serializers.PrimaryKeyRelatedField):
+#     queryset = User.objects.filter(role = "Customer")
+    
+# class CustomerSerializer(serializers.ModelSerializer):
+#     user = CustomerOnlyList(write_only = True)
+    
+#     class Meta:
+#         model = Customer
+#         fields = [
+#             "id",
+#             "user",
+#             "supplier_name",
+#             "customer_group",
+#             "reward_point",
+#         ]
+
+# class BillerListOnly(serializers.PrimaryKeyRelatedField):
+#     queryset = User.objects.filter(role = "Biller")
+    
+# class BillerSerializer(serializers.ModelSerializer):
+#     user = BillerListOnly(write_only = True)
+#     class Meta:
+#         model = Biller
+#         fields = [
+#             "id",
+#             "user",
+#             "NID",
+#             "warehouse",
+#             "biller_code"
+#         ]
+
 
 class GetUserListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -199,3 +244,4 @@ class ForgotPasswordSerializer(serializers.ModelSerializer):
         instance.set_password(validate_password.get('password'))
         instance.save()
         return instance
+    

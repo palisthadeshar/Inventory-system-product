@@ -4,6 +4,11 @@ from apps.products.views import (
     BrandViewSet,
     CategoryViewSet,
     UnitViewSet,
+    BarcodeViewset,
+    PurchaseViewSet,
+    SalesViewSet,
+    PurchaseInvoiceViewSet,
+    AdjustmentViewset
 )
 
 router = DefaultRouter()
@@ -11,3 +16,8 @@ router.register("product", ProductViewSet)
 router.register("brand", BrandViewSet)
 router.register("cateogry", CategoryViewSet)
 router.register("unit", UnitViewSet)
+router.register("barcode",BarcodeViewset)
+router.register("purchase",PurchaseViewSet)
+router.register("sales",SalesViewSet)
+router.register("purchase-invoice",PurchaseInvoiceViewSet)
+router.register("adjustment",AdjustmentViewset)

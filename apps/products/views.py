@@ -1,6 +1,16 @@
-from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
-from apps.products.models import Brand, Category, Product, Unit
+from apps.products.models import (
+    Brand,
+    Category,
+    Product,
+    Unit,
+    Barcode,
+    Purchase,
+    Sales,
+    PurchaseInvoice,
+    SalesInvoice,
+    Adjustment
+)
 from apps.products.serializers import (
     BrandSerializers,
     CategorySerializer,
@@ -10,6 +20,13 @@ from apps.products.serializers import (
     GetCategorySeralizer,
     GetUnitSeralizer,
     GetBrandSeralizer,
+    BarcodeSerializer,
+    GetBarcodeSerializer,
+    PurchaseSerializer,
+    SalesSerializer,
+    GetPurachseSerializer,
+    PurchaseInvoiceSerializer,
+    AdjustmentSerializer
 )
 from apps.store.models import Warehouse
 from apps.products.pagination import Pagination
@@ -19,16 +36,17 @@ from rest_framework.response import Response
 from rest_framework import status
 from utils.permissions import SupplierPermssion
 from rest_framework.permissions import (
-    BasePermission,
     AllowAny,
     IsAdminUser,
     IsAuthenticated,
 )
+import barcode
+from barcode.writer import ImageWriter
+import uuid
+import os
 
 
 # Create your views here.
-
-
 class MyPagination(ModelViewSet):
     pagination_class = Pagination
 
@@ -96,6 +114,9 @@ class UnitViewSet(ModelViewSet):
         return super().get_serializer_class()
 
 
+from apps.store.serializers import WarehouseSerializer
+
+
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -118,23 +139,36 @@ class ProductViewSet(ModelViewSet):
         except:
             return [permission() for permission in self.permission_classes]
 
-    def create_or_update_warehouse(self, warehouses):
-        warehouse_ids = []
-        # print(warehouses)
-        for warehouse in warehouses:
-            warehouse_instance, created = Warehouse.objects.update_or_create(
-                id=warehouse.get("id"), defaults=warehouse
-            )
-            warehouse_ids.append(warehouse_instance.id)
-        return warehouse_ids
+    # def create_or_update_warehouse(self, warehouses):
+    #     warehouse_ids = []
+    #     # print(warehouses)
+    #     for warehouse in warehouses:
+    #         warehouse_instance, created = Warehouse.objects.update_or_create(
+    #             id=warehouse.get("id"), defaults=warehouse
+    #         )
+    #         warehouse_ids.append(warehouse_instance.id)
+    #     return warehouse_ids
 
-    def partial_update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        warehouse_data = request.data.pop("warehouse")
-        warehouse = self.create_or_update_warehouse(warehouse_data)
-        instance.warehouse.set(warehouse)
-        serializer = ProductSerializer(instance)
-        return Response(serializer.data)
+    # def partial_update(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #     warehouse_data = request.data.pop("warehouse")
+    #     warehouse = self.create_or_update_warehouse(warehouse_data)
+    #     instance.warehouse.set(warehouse)
+    #     serializer = ProductSerializer(instance)
+    #     return Response(serializer.data)
+
+    # def partial_update(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #     warehouse_data = request.data.pop("warehouse")
+    #     warehouse_ids_list = []
+    #     for warehouse in warehouse_data:
+    #         warehouse_instance = Warehouse.objects.get(id = warehouse)
+
+    #         warehouse_ids_list.append(warehouse_instance.id)
+    #     instance.warehouse.set(warehouse_ids_list)
+    #     serializer = ProductSerializer(instance)
+
+    #     return Response({"updated data" : serializer.data})
 
     def get_serializer_class(self):
         if self.action == "retrieve":
@@ -143,4 +177,59 @@ class ProductViewSet(ModelViewSet):
 
 
 class BarcodeViewset(ModelViewSet):
-    pass
+    queryset = Barcode.objects.all()
+    serializer_class = BarcodeSerializer
+
+    def create(self, request, *args, **kwargs):
+        product_infromation = request.data.get("information")
+        get_current_product = Product.objects.get(id=product_infromation)
+        get_current_product_code = get_current_product.product_code
+        if not get_current_product_code:
+            # print(product_infromation.product_code)
+            return Response(
+                {"error": "Product code is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        barcode_class = barcode.get_barcode_class("code128")
+        code = barcode_class(get_current_product_code, writer=ImageWriter())
+
+        unique_filename = f"barcode_{uuid.uuid4()}"
+
+        directory_path = "barcode-image/"
+        if not os.path.exists(directory_path):
+            os.makedirs(directory_path)
+        barcode_image = code.save(f"barcode-image/{unique_filename}")
+
+        serializer = BarcodeSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(barcode_image=barcode_image)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return GetBarcodeSerializer
+        return super().get_serializer_class()
+
+
+class PurchaseViewSet(ModelViewSet):
+    queryset = Purchase.objects.all()
+    serializer_class = PurchaseSerializer
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return GetPurachseSerializer
+        return super().get_serializer_class()
+
+
+class SalesViewSet(ModelViewSet):
+    queryset = Sales.objects.all()
+    serializer_class = SalesSerializer
+
+class PurchaseInvoiceViewSet(ModelViewSet):
+    queryset = PurchaseInvoice.objects.all()
+    serializer_class = PurchaseInvoiceSerializer
+
+class AdjustmentViewset(ModelViewSet):
+    queryset = Adjustment.objects.all()
+    serializer_class = AdjustmentSerializer

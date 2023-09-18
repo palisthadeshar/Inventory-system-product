@@ -6,4 +6,10 @@ class SupplierPermssion(BasePermission):
             return True
         return False
     
+class CustomerPermssion(BasePermission):
+    def has_permission(self, request, view):
+        if request.user.role=='Customer':
+            return True
+        return False
+    
 

@@ -6,4 +6,4 @@ from apps.store.serializers import WarehouseSerializer
 class WarehouseViewset(ModelViewSet):
     queryset = Warehouse.objects.all()
     serializer_class = WarehouseSerializer
-    http_method_names = ['get','post','put','delete']
+    http_method_names = ['get','post','put','delete'] 

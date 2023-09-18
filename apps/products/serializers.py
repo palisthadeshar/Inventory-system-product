@@ -1,8 +1,20 @@
 from rest_framework import serializers
-from apps.products.models import Brand, Category, Product, Unit, Barcode
-from apps.accounts.serializers import UserSerializer
+from apps.products.models import (
+    Brand,
+    Category,
+    Product,
+    Unit,
+    Barcode,
+    Purchase,
+    Sales,
+    PurchaseInvoice,
+    SalesInvoice,
+    Adjustment
+)
+from apps.accounts.serializers import UserSerializer,SupplierSerializer
 from apps.store.serializers import WarehouseSerializer
 from apps.store.models import Warehouse
+from rest_framework.response import Response
 
 
 class BrandSerializers(serializers.ModelSerializer):
@@ -34,7 +46,7 @@ class UnitSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    warehouse = WarehouseSerializer(many=True)
+    # warehouse = WarehouseSerializer(many=True)
 
     class Meta:
         model = Product
@@ -64,22 +76,44 @@ class ProductSerializer(serializers.ModelSerializer):
             "has_imie_code",
         )
 
+    # def create(self, validated_data):
+    #     warehouses_data = validated_data.pop("warehouse",[])
+    #     product = Product.objects.create(**validated_data)
+
+    #     for warehouse_data in warehouses_data:
+    #         warehouses, created = Warehouse.objects.get_or_create(**warehouse_data)
+    #         product.warehouse.add(warehouses)
+
+    #     return product
 
     def create(self, validated_data):
-        warehouses_data = validated_data.pop("warehouse")
-        product = Product.objects.create(**validated_data)
+        warehouse_data = validated_data.pop("warehouse", [])
 
-        for warehouse_data in warehouses_data:
-            warehouses, created = Warehouse.objects.get_or_create(**warehouse_data)
-            product.warehouse.add(warehouses)
+        product = Product.objects.create(**validated_data)
+        for warehouse_info in warehouse_data:
+            warehouse_id = warehouse_info.id
+
+            try:
+                warehouse_obj = Warehouse.objects.get(id=warehouse_id)
+                product.warehouse.add(warehouse_obj)
+            except Warehouse.DoesNotExist:
+                return Response({"message": "no such warehouse exists."})
 
         return product
-    
+
 
 class BarcodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Barcode
-        fields = ("information", "papersize")
+        fields = ("id", "information", "papersize")
+
+class AdjustmentSerializer(serializers.ModelSerializer):
+    quantity = serializers.IntegerField()
+    class Meta:
+        model=Adjustment
+        fields=('quantity',
+                'warehouse',
+                'product')
 
 
 class GETProductSerializer(serializers.ModelSerializer):
@@ -89,9 +123,18 @@ class GETProductSerializer(serializers.ModelSerializer):
     created_by = UserSerializer()
     modified_by = UserSerializer()
     user = UserSerializer()
+    warehouse = WarehouseSerializer(many=True)
 
     class Meta:
         model = Product
+        fields = "__all__"
+
+
+class GetBarcodeSerializer(serializers.ModelSerializer):
+    information = ProductSerializer()
+
+    class Meta:
+        model = Barcode
         fields = "__all__"
 
 
@@ -130,3 +173,60 @@ class GetBrandSeralizer(serializers.ModelSerializer):
             "brand_name",
             "brand_image",
         )
+
+
+class PurchaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Purchase
+        fields = [
+            "id",
+            "warehouse",
+            "supplier",
+            "product",
+            "order_tax",
+            "order_discount",
+            "shipping",
+            "sales_status",
+            "purchase_note",
+        ]
+
+class GetPurachseSerializer(serializers.ModelSerializer):
+    warehouse = WarehouseSerializer()
+    supplier = SupplierSerializer()
+    product = ProductSerializer(many=True)
+
+    class Meta:
+        model = Purchase
+        fields = ("warehouse",
+            "supplier",
+            "product",
+            "order_tax",
+            "order_discount",
+            "shipping",
+            "sales_status",
+            "purchase_note")
+
+
+class SalesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sales
+        fields = [
+            "customer",
+            "warehouse",
+            "biller",
+            "product",
+            "sales_tax",
+            "discount",
+            "shipping",
+            "sales_status",
+            "payment_status",
+            "sales_image",
+            "sales_note",
+            "staff_remark",
+        ]
+
+class PurchaseInvoiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PurchaseInvoice
+        fields = ('warehouse','supplier','purchases')
+
