@@ -6,6 +6,7 @@ from apps.products.constant import (
     BARCODE_PAPER_SIZE,
     SALE_STATUS,
     ORDER_TAX,
+    ADJUSTMENT_TYPE
 )
 from utils.models import CommonInfo
 from apps.store.models import Warehouse
@@ -88,12 +89,16 @@ class Barcode(CommonInfo):
 
 
 class Adjustment(CommonInfo):
-    warehouse = models.OneToOneField(Warehouse,on_delete=models.SET_NULL,null=True,blank=True)
-    product = models.OneToOneField(Product,on_delete=models.SET_NULL,null=True,blank=True)
+    warehouse = models.OneToOneField(
+        Warehouse, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    product = models.ForeignKey(
+        Product, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    type = models.CharField(choices=ADJUSTMENT_TYPE,max_length=15,default=ADJUSTMENT_TYPE[0][0])
 
     def __str__(self) -> str:
         return self.warehouse
-    
 
 
 class Purchase(CommonInfo):
@@ -114,8 +119,8 @@ class Purchase(CommonInfo):
     sales_status = models.CharField(choices=SALE_STATUS, max_length=15)
     purchase_note = models.TextField()
 
-    def __str__(self) -> str:
-        return self.supplier.supplier_code
+    # def __str__(self) -> str:
+    #     return self.product.product_name
 
 
 class Sales(CommonInfo):
@@ -142,6 +147,7 @@ class Sales(CommonInfo):
     sales_note = models.TextField()
     staff_remark = models.TextField()
 
+    
 
 class Invoice(CommonInfo):
     warehouse = models.ForeignKey(
@@ -160,16 +166,19 @@ class Invoice(CommonInfo):
     )
 
     class Meta:
-        abstract=True 
+        abstract = True
+
 
 class PurchaseInvoice(Invoice):
-    purchases = models.OneToOneField(Purchase,on_delete=models.SET_NULL,null=True,blank=True)
+    purchases = models.OneToOneField(
+        Purchase, on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     def __str__(self) -> str:
         return self.purchases.product
 
+
 class SalesInvoice(Invoice):
-    sales = models.OneToOneField(Sales,on_delete=models.SET_NULL,null=True,blank=True)
-
-
-    
+    sales = models.OneToOneField(
+        Sales, on_delete=models.SET_NULL, null=True, blank=True
+    )

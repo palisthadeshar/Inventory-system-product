@@ -34,3 +34,7 @@ ORDER_TAX = [
     ('12','Vat @12%'),
     ('13','Vat @13%'),
 ]
+ADJUSTMENT_TYPE = [
+    ('Addition','Addition'),
+    ('Substraction','Substraction')
+]

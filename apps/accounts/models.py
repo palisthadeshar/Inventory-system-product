@@ -62,7 +62,7 @@ class Customer(CommonInfo, Address):
     reward_point = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.created_by.full_name
+        return self.user.username
 
 
 class Biller(CommonInfo, Address):

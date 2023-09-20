@@ -8,7 +8,9 @@ from apps.products.views import (
     PurchaseViewSet,
     SalesViewSet,
     PurchaseInvoiceViewSet,
-    AdjustmentViewset
+    AdjustmentViewset,
+    SalesInvoiceViewSet,
+
 )
 
 router = DefaultRouter()
@@ -21,3 +23,4 @@ router.register("purchase",PurchaseViewSet)
 router.register("sales",SalesViewSet)
 router.register("purchase-invoice",PurchaseInvoiceViewSet)
 router.register("adjustment",AdjustmentViewset)
+router.register("sales-invoice",SalesInvoiceViewSet) 

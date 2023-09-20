@@ -9,9 +9,14 @@ from apps.products.models import (
     Sales,
     PurchaseInvoice,
     SalesInvoice,
-    Adjustment
+    Adjustment,
 )
-from apps.accounts.serializers import UserSerializer,SupplierSerializer
+from apps.accounts.serializers import (
+    UserSerializer,
+    SupplierSerializer,
+    BillerSerializer,
+    CustomerSerializer,
+)
 from apps.store.serializers import WarehouseSerializer
 from apps.store.models import Warehouse
 from rest_framework.response import Response
@@ -76,16 +81,6 @@ class ProductSerializer(serializers.ModelSerializer):
             "has_imie_code",
         )
 
-    # def create(self, validated_data):
-    #     warehouses_data = validated_data.pop("warehouse",[])
-    #     product = Product.objects.create(**validated_data)
-
-    #     for warehouse_data in warehouses_data:
-    #         warehouses, created = Warehouse.objects.get_or_create(**warehouse_data)
-    #         product.warehouse.add(warehouses)
-
-    #     return product
-
     def create(self, validated_data):
         warehouse_data = validated_data.pop("warehouse", [])
 
@@ -107,13 +102,29 @@ class BarcodeSerializer(serializers.ModelSerializer):
         model = Barcode
         fields = ("id", "information", "papersize")
 
+
 class AdjustmentSerializer(serializers.ModelSerializer):
-    quantity = serializers.IntegerField()
+    quantity = serializers.IntegerField(write_only=True)
+
     class Meta:
-        model=Adjustment
-        fields=('quantity',
-                'warehouse',
-                'product')
+        model = Adjustment
+        fields = ("id", "quantity", "warehouse", "product", "type")
+
+    def validate(self, data):
+        product = data.get("product")
+        type = data.get("type")
+        quantity = data.get("quantity")
+        if type == "Substraction" and product.stock_alert < quantity:
+            raise serializers.ValidationError(
+                {product.product_name: "Stock is less than quantity to be substracted."}
+            )
+        elif type == "Addition":
+            product.stock_alert += int(quantity)
+        else:
+            product.stock_alert -= int(quantity)
+        product.save()
+
+        return data
 
 
 class GETProductSerializer(serializers.ModelSerializer):
@@ -175,10 +186,19 @@ class GetBrandSeralizer(serializers.ModelSerializer):
         )
 
 
+class GetAdjustmentSeralizer(serializers.ModelSerializer):
+    product = ProductSerializer()
+    warehouse = WarehouseSerializer()
+
+    class Meta:
+        model = Adjustment
+        fields = "__all__"
+
+
 class PurchaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Purchase
-        fields = [
+        fields = (
             "id",
             "warehouse",
             "supplier",
@@ -188,7 +208,8 @@ class PurchaseSerializer(serializers.ModelSerializer):
             "shipping",
             "sales_status",
             "purchase_note",
-        ]
+        )
+
 
 class GetPurachseSerializer(serializers.ModelSerializer):
     warehouse = WarehouseSerializer()
@@ -197,20 +218,22 @@ class GetPurachseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Purchase
-        fields = ("warehouse",
+        fields = (
+            "warehouse",
             "supplier",
             "product",
             "order_tax",
             "order_discount",
             "shipping",
             "sales_status",
-            "purchase_note")
+            "purchase_note",
+        )
 
 
 class SalesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sales
-        fields = [
+        fields = (
             "customer",
             "warehouse",
             "biller",
@@ -223,10 +246,59 @@ class SalesSerializer(serializers.ModelSerializer):
             "sales_image",
             "sales_note",
             "staff_remark",
-        ]
+        )
+
+
+class GetSalesSerializer(serializers.ModelSerializer):
+    warehouse = WarehouseSerializer()
+    biller = BillerSerializer()
+    customer = CustomerSerializer()
+    product = ProductSerializer(many=True)
+
+    class Meta:
+        model = Sales
+        fields = (
+            "customer",
+            "warehouse",
+            "biller",
+            "product",
+            "sales_tax",
+            "discount",
+            "shipping",
+            "sales_status",
+            "payment_status",
+            "sales_image",
+            "sales_note",
+            "staff_remark",
+        )
+
 
 class PurchaseInvoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = PurchaseInvoice
-        fields = ('warehouse','supplier','purchases')
+        fields = ("id", "warehouse", "supplier", "purchases")
 
+
+class GetPurchaseInvoiceSerializer(serializers.ModelSerializer):
+    warehouse = WarehouseSerializer()
+    supplier = SupplierSerializer()
+    purchases = PurchaseSerializer()
+
+    class Meta:
+        model = PurchaseInvoice
+        fields = "__all__"
+
+class SalesInvoiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SalesInvoice
+        fields = ("id", "warehouse", "supplier", "sales")
+
+
+class GetSalesInvoiceSerializer(serializers.ModelSerializer):
+    warehouse = WarehouseSerializer()
+    supplier = SupplierSerializer()
+    sales = SalesSerializer()
+
+    class Meta:
+        model = SalesInvoice
+        fields = "__all__"

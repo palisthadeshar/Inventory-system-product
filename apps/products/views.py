@@ -26,9 +26,13 @@ from apps.products.serializers import (
     SalesSerializer,
     GetPurachseSerializer,
     PurchaseInvoiceSerializer,
-    AdjustmentSerializer
+    AdjustmentSerializer,
+    GetAdjustmentSeralizer,
+    GetSalesSerializer,
+    GetPurchaseInvoiceSerializer,
+    SalesInvoiceSerializer,
+    GetSalesInvoiceSerializer
 )
-from apps.store.models import Warehouse
 from apps.products.pagination import Pagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
@@ -114,8 +118,6 @@ class UnitViewSet(ModelViewSet):
         return super().get_serializer_class()
 
 
-from apps.store.serializers import WarehouseSerializer
-
 
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
@@ -181,8 +183,8 @@ class BarcodeViewset(ModelViewSet):
     serializer_class = BarcodeSerializer
 
     def create(self, request, *args, **kwargs):
-        product_infromation = request.data.get("information")
-        get_current_product = Product.objects.get(id=product_infromation)
+        product_information = request.data.get("information")
+        get_current_product = Product.objects.get(id=product_information)
         get_current_product_code = get_current_product.product_code
         if not get_current_product_code:
             # print(product_infromation.product_code)
@@ -212,6 +214,23 @@ class BarcodeViewset(ModelViewSet):
         return super().get_serializer_class()
 
 
+class AdjustmentViewset(ModelViewSet):
+    queryset = Adjustment.objects.all()
+    serializer_class = AdjustmentSerializer
+
+    def create(self, request):
+        serializer = AdjustmentSerializer(data = request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.validated_data.pop('quantity')
+        adjustment = Adjustment.objects.create(**serializer.validated_data)
+        serializer = AdjustmentSerializer(adjustment)
+        return Response({"data" : serializer.data}) 
+    
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return GetAdjustmentSeralizer
+        return super().get_serializer_class()
+    
 class PurchaseViewSet(ModelViewSet):
     queryset = Purchase.objects.all()
     serializer_class = PurchaseSerializer
@@ -226,10 +245,28 @@ class SalesViewSet(ModelViewSet):
     queryset = Sales.objects.all()
     serializer_class = SalesSerializer
 
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return GetSalesSerializer
+        return super().get_serializer_class()
+
 class PurchaseInvoiceViewSet(ModelViewSet):
     queryset = PurchaseInvoice.objects.all()
     serializer_class = PurchaseInvoiceSerializer
 
-class AdjustmentViewset(ModelViewSet):
-    queryset = Adjustment.objects.all()
-    serializer_class = AdjustmentSerializer
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return GetPurchaseInvoiceSerializer
+        return super().get_serializer_class()
+    
+class SalesInvoiceViewSet(ModelViewSet):
+    queryset = SalesInvoice.objects.all()
+    serializer_class = SalesInvoiceSerializer
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return GetSalesInvoiceSerializer
+        return super().get_serializer_class()
+
+
+    
