@@ -33,3 +33,4 @@ class Address(models.Model):
     
     class Meta:
         abstract=True
+

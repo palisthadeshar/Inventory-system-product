@@ -5,6 +5,7 @@ from apps.accounts.models import (
     Customer,
     Biller,
     Supplier,
+    OTP
 )
 from apps.store.serializers import WarehouseSerializer
 
@@ -32,7 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
         if data['password'] != data['password2']:
             raise serializers.ValidationError(
                 {
-                    "password": "The two password fields did not match"
+                    "password": "Password fields did not match."
                 }
             )
         return data
@@ -49,18 +50,19 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class SupplierSerializer(serializers.ModelSerializer):
-
+    user = UserSerializer(read_only=True)
     class Meta:
         model = Supplier
+        
         fields = (
             "id",
             "user",
-            "supplier_code",
             "company",
         )
 
 
 class CustomerSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
     class Meta:
         model = Customer
         fields = (
@@ -73,73 +75,16 @@ class CustomerSerializer(serializers.ModelSerializer):
 
 
 class BillerSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
     class Meta:
         model = Biller
         fields = (
             "id",
             "user",
             "NID",
-            "warehouse",
-            "biller_code"
+            "warehouse"
         )
 
-# class SupplierOnlyListSerializer(serializers.PrimaryKeyRelatedField):
-#     queryset = User.objects.filter(role = "Supplier")
-    
-# class SupplierSerializer(serializers.ModelSerializer):
-#     user = SupplierOnlyListSerializer(write_only = True)
-#     class Meta:
-#         model = Supplier
-#         fields = [
-#             "id",
-#             "user",
-#             "supplier_code",
-#             "company",
-#         ]
-
-# class CustomerOnlyList(serializers.PrimaryKeyRelatedField):
-#     queryset = User.objects.filter(role = "Customer")
-    
-# class CustomerSerializer(serializers.ModelSerializer):
-#     user = CustomerOnlyList(write_only = True)
-    
-#     class Meta:
-#         model = Customer
-#         fields = [
-#             "id",
-#             "user",
-#             "supplier_name",
-#             "customer_group",
-#             "reward_point",
-#         ]
-
-# class BillerListOnly(serializers.PrimaryKeyRelatedField):
-#     queryset = User.objects.filter(role = "Biller")
-    
-# class BillerSerializer(serializers.ModelSerializer):
-#     user = BillerListOnly(write_only = True)
-#     class Meta:
-#         model = Biller
-#         fields = [
-#             "id",
-#             "user",
-#             "NID",
-#             "warehouse",
-#             "biller_code"
-#         ]
-
-
-class GetUserListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = (
-            "id",
-            "full_name",
-            "phone",
-            "email",
-            "gender",
-            "username",
-        )
 
 
 class GetSupplierSerializer(serializers.ModelSerializer):
@@ -210,7 +155,12 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"old_password": "Old password is not correct"})
         return value
-
+    
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data["password"])
+        instance.save()
+        return instance
+    
 
     
 class EmailSerializer(serializers.Serializer):
@@ -224,24 +174,15 @@ class ForgotPasswordSerializer(serializers.ModelSerializer):
     otp = serializers.CharField()
     password = serializers.CharField(write_only=True)
     password1 = serializers.CharField(write_only=True)
+    
     class Meta:
-        model = User
+        model = OTP
         fields = ['otp', 'password', 'password1']
-        
-    def validate_otp(self, value):
-        user = self.context['user']
 
-        if user.otp != value:
-            raise serializers.ValidationError("Sorry the otp doesn't match")
-        return value
     
     def validate(self, data):
         if data.get('password') != data.get('password1'):
             raise serializers.ValidationError({'password' : 'password do not match'} )
         return data
     
-    def update(self, instance, validated_data):
-        instance.set_password(validate_password.get('password'))
-        instance.save()
-        return instance
-    
+

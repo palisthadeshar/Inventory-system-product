@@ -4,12 +4,11 @@ from apps.accounts.views import (
     CustomerViewSet,
     BillerViewSet,
     SupplierViewSet,
-    ForgotPasswordView,
+
 )
 
 router = DefaultRouter()
 router.register("user", UserViewSet)
 router.register("customer",CustomerViewSet)
-router.register("biller",BillerViewSet)
+router.register("biller",BillerViewSet) 
 router.register("supplier",SupplierViewSet)
-router.register("forgot-password", ForgotPasswordView, basename="forgot-password")

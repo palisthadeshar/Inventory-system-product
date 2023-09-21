@@ -23,11 +23,7 @@ class User(AbstractUser):
         max_length=150,
         unique=True,
     )
-    role = models.CharField(
-        max_length=20,
-        choices=ROLE_CHOICES,
-    )
-    otp = models.CharField(null=True,blank=True,max_length=10)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, null=True, blank=True)
     profile_image = models.ImageField(upload_to="profile/", blank=True, null=True)
 
     USERNAME_FIELD = "email"
@@ -44,25 +40,18 @@ class User(AbstractUser):
 
 
 class Supplier(CommonInfo, Address):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, null=True, related_name="supplier_details"
+    )
     supplier_code = models.CharField(max_length=10)
     company = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.user.full_name
 
 
 class Customer(CommonInfo, Address):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
-    supplier_name = models.ForeignKey(
-        Supplier,
-        on_delete=models.CASCADE,
-    )
+    supplier_name = models.ForeignKey(Supplier, on_delete=models.CASCADE, null=True)
     customer_group = models.CharField(max_length=10, choices=CUSTOMER_GROUP_CHOICES)
     reward_point = models.IntegerField(default=0)
-
-    def __str__(self):
-        return self.user.username
 
 
 class Biller(CommonInfo, Address):
@@ -75,5 +64,7 @@ class Biller(CommonInfo, Address):
     )
     biller_code = models.CharField(max_length=255)
 
-    def __str__(self):
-        return self.user.full_name
+class OTP(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    otp = models.CharField(max_length=8)
+    created_at = models.DateTimeField(auto_now=True)
