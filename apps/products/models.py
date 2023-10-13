@@ -16,19 +16,72 @@ from utils.threads import get_request
 
 # Create your models here.
 class Brand(CommonInfo):
+    """
+    Represents a brand with a name and optional image.
+
+    This model represents a brand entity in the system, which can have a name
+    and an optional image associated with it.
+
+    Attributes:
+        brand_name (str): The name of the brand (up to 30 characters).
+        brand_image (ImageField): An optional image representing the brand's logo or image.
+
+    Inherited Attributes:
+        - id (AutoField): The primary key for the brand.
+        - created_at (DateTimeField): The date and time when the brand was created.
+        - updated_at (DateTimeField): The date and time when the brand was last updated.
+
+    Methods:
+        __str__(): Returns a human-readable string representation of the brand.
+
+    """
     brand_name = models.CharField(max_length=30)
     brand_image = models.ImageField(upload_to="profile/", blank=True, null=True)
 
     def __str__(self):
+        """
+        Returns a human-readable string representation of the brand.
+
+        Returns:
+            str: A string representing the brand, typically the brand name.
+        """
         return self.brand_name
 
 
+
 class Category(CommonInfo):
+    """
+    Represents a category with main and subcategories.
+
+    This model represents a category that can be used to classify various items
+    into main categories and subcategories.
+
+    Attributes:
+        main_category (str): The main category name (up to 30 characters).
+        sub_category (str): The subcategory name (up to 30 characters).
+
+    Inherited Attributes:
+        - id (AutoField): The primary key for the category.
+        - created_at (DateTimeField): The date and time when the category was created.
+        - updated_at (DateTimeField): The date and time when the category was last updated.
+
+    Methods:
+        __str__(): Returns a human-readable string representation of the category.
+
+    """
+
     main_category = models.CharField(max_length=30)
     sub_category = models.CharField(max_length=30)
 
     def __str__(self):
+        """
+        Returns a human-readable string representation of the category.
+
+        Returns:
+            str: A string representing the category, typically the main category name.
+        """
         return self.main_category
+
 
 
 class Unit(CommonInfo):
@@ -113,6 +166,7 @@ class Purchase(CommonInfo):
         related_name="%(app_label)s_%(class)s_supplier",
     )
     product = models.ManyToManyField(Product)
+    quantity = models.IntegerField(null=True,blank=True)
     order_tax = models.CharField(choices=ORDER_TAX, max_length=10)
     order_discount = models.FloatField()
     shipping = models.FloatField()
@@ -123,7 +177,7 @@ class Purchase(CommonInfo):
     #     return self.product.product_name
 
 
-class Sales(CommonInfo):
+class Sales(CommonInfo): 
     customer = models.ForeignKey(
         Customer,
         on_delete=models.CASCADE,
@@ -141,6 +195,7 @@ class Sales(CommonInfo):
     sales_tax = models.CharField(choices=ORDER_TAX, max_length=10)
     discount = models.FloatField()
     shipping = models.FloatField()
+    quantity = models.IntegerField(null=True,blank=True)
     sales_status = models.CharField(choices=SALE_STATUS, max_length=15)
     payment_status = models.CharField(choices=SALE_STATUS, max_length=15)
     sales_image = models.ImageField(upload_to="sales/", blank=True, null=True)

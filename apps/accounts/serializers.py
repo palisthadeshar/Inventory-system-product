@@ -122,6 +122,7 @@ class GetBillerSerializer(serializers.ModelSerializer):
 
 class GetCustomerSerializer(serializers.ModelSerializer):
     supplier_name = GetSupplierSerializer()
+    # user = UserSerializer(write_only=True)
 
     class Meta:
         model = Customer

@@ -38,7 +38,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.response import Response
 from rest_framework import status
-from utils.permissions import SupplierPermssion
+# from utils.permissions import SupplierPermssion
 from rest_framework.permissions import (
     AllowAny,
     IsAdminUser,
@@ -48,6 +48,7 @@ import barcode
 from barcode.writer import ImageWriter
 import uuid
 import os
+from django.db.models import Sum
 
 
 # Create your views here.
@@ -128,8 +129,8 @@ class ProductViewSet(ModelViewSet):
     permission_classes_by_action = {
         "list": [AllowAny],
         "retrieve": [IsAuthenticated],
-        "create": [IsAdminUser | SupplierPermssion],
-        "update": [IsAuthenticated | SupplierPermssion],
+        # "create": [IsAdminUser | SupplierPermssion],
+        # "update": [IsAuthenticated | SupplierPermssion],
     }
 
     def get_permissions(self):
@@ -249,6 +250,24 @@ class SalesViewSet(ModelViewSet):
         if self.action == "retrieve":
             return GetSalesSerializer
         return super().get_serializer_class()
+    
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        # import pdb;pdb.set_trace()
+        serializer = SalesSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        for product_data in data["product"]:                
+            get_product_by_id = Product.objects.get(id=product_data)
+            required_quantity = get_product_by_id.stock_alert
+
+            if data['quantity'] < required_quantity:
+                return Response({'errors' : 'total quantiy is greater than required quantity.'})
+            else:
+                pass
+        
+        return Response({"data": serializer.data, "message": "success sales"},status=status.HTTP_200_OK)
 
 class PurchaseInvoiceViewSet(ModelViewSet):
     queryset = PurchaseInvoice.objects.all()

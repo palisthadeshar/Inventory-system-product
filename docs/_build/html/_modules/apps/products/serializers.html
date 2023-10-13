@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>apps.products.serializers &mdash; config 1.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            config
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">Inventory-system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apps.products.html">apps.products package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">config</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">apps.products.serializers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for apps.products.serializers</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">serializers</span>
+<span class="kn">from</span> <span class="nn">apps.products.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Brand</span><span class="p">,</span>
+    <span class="n">Category</span><span class="p">,</span>
+    <span class="n">Product</span><span class="p">,</span>
+    <span class="n">Unit</span><span class="p">,</span>
+    <span class="n">Barcode</span><span class="p">,</span>
+    <span class="n">Purchase</span><span class="p">,</span>
+    <span class="n">Sales</span><span class="p">,</span>
+    <span class="n">PurchaseInvoice</span><span class="p">,</span>
+    <span class="n">SalesInvoice</span><span class="p">,</span>
+    <span class="n">Adjustment</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">apps.accounts.serializers</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">UserSerializer</span><span class="p">,</span>
+    <span class="n">SupplierSerializer</span><span class="p">,</span>
+    <span class="n">BillerSerializer</span><span class="p">,</span>
+    <span class="n">CustomerSerializer</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">apps.store.serializers</span> <span class="kn">import</span> <span class="n">WarehouseSerializer</span>
+<span class="kn">from</span> <span class="nn">apps.store.models</span> <span class="kn">import</span> <span class="n">Warehouse</span>
+<span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
+
+
+<div class="viewcode-block" id="BrandSerializers">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.BrandSerializers">[docs]</a>
+<span class="k">class</span> <span class="nc">BrandSerializers</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+<div class="viewcode-block" id="BrandSerializers.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.BrandSerializers.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Brand</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;brand_name&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;brand_image&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CategorySerializer">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.CategorySerializer">[docs]</a>
+<span class="k">class</span> <span class="nc">CategorySerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+<div class="viewcode-block" id="CategorySerializer.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.CategorySerializer.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Category</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;main_category&quot;</span><span class="p">,</span> <span class="s2">&quot;sub_category&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CategorySerializer.validate">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.CategorySerializer.validate">[docs]</a>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;sub_category&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;main_category&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">serializers</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">(</span>
+                <span class="p">{</span><span class="s2">&quot;sub_category&quot;</span><span class="p">:</span> <span class="s2">&quot;Sub category cannot be same as main category.&quot;</span><span class="p">}</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="UnitSerializer">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.UnitSerializer">[docs]</a>
+<span class="k">class</span> <span class="nc">UnitSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+<div class="viewcode-block" id="UnitSerializer.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.UnitSerializer.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Unit</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;unit_name&quot;</span><span class="p">,</span> <span class="s2">&quot;short_name&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ProductSerializer">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.ProductSerializer">[docs]</a>
+<span class="k">class</span> <span class="nc">ProductSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="c1"># warehouse = WarehouseSerializer(many=True)</span>
+
+<div class="viewcode-block" id="ProductSerializer.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.ProductSerializer.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;product_name&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;product_type&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;category&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;product_code&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;brand&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;barcode&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;product_unit&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;product_price&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;expense&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;unit_price&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;product_tax&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;tax_method&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;discount&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;stock_alert&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;product_image&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;featured&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;warehouse&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;price_difference_in_warehouse&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;has_expiry_date&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;add_promotional_sale&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;has_multi_variant&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;has_imie_code&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ProductSerializer.create">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.ProductSerializer.create">[docs]</a>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validated_data</span><span class="p">):</span>
+        <span class="n">warehouse_data</span> <span class="o">=</span> <span class="n">validated_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;warehouse&quot;</span><span class="p">,</span> <span class="p">[])</span>
+
+        <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="o">**</span><span class="n">validated_data</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">warehouse_info</span> <span class="ow">in</span> <span class="n">warehouse_data</span><span class="p">:</span>
+            <span class="n">warehouse_id</span> <span class="o">=</span> <span class="n">warehouse_info</span><span class="o">.</span><span class="n">id</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">warehouse_obj</span> <span class="o">=</span> <span class="n">Warehouse</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">warehouse_id</span><span class="p">)</span>
+                <span class="n">product</span><span class="o">.</span><span class="n">warehouse</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">warehouse_obj</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">Warehouse</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Response</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;no such warehouse exists.&quot;</span><span class="p">})</span>
+
+        <span class="k">return</span> <span class="n">product</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="BarcodeSerializer">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.BarcodeSerializer">[docs]</a>
+<span class="k">class</span> <span class="nc">BarcodeSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+<div class="viewcode-block" id="BarcodeSerializer.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.BarcodeSerializer.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Barcode</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;information&quot;</span><span class="p">,</span> <span class="s2">&quot;papersize&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AdjustmentSerializer">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.AdjustmentSerializer">[docs]</a>
+<span class="k">class</span> <span class="nc">AdjustmentSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="n">quantity</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">write_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AdjustmentSerializer.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.AdjustmentSerializer.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Adjustment</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;quantity&quot;</span><span class="p">,</span> <span class="s2">&quot;warehouse&quot;</span><span class="p">,</span> <span class="s2">&quot;product&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AdjustmentSerializer.validate">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.AdjustmentSerializer.validate">[docs]</a>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;product&quot;</span><span class="p">)</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span>
+        <span class="n">quantity</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;quantity&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;Substraction&quot;</span> <span class="ow">and</span> <span class="n">product</span><span class="o">.</span><span class="n">stock_alert</span> <span class="o">&lt;</span> <span class="n">quantity</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">serializers</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">(</span>
+                <span class="p">{</span><span class="n">product</span><span class="o">.</span><span class="n">product_name</span><span class="p">:</span> <span class="s2">&quot;Stock is less than quantity to be substracted.&quot;</span><span class="p">}</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;Addition&quot;</span><span class="p">:</span>
+            <span class="n">product</span><span class="o">.</span><span class="n">stock_alert</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">quantity</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">product</span><span class="o">.</span><span class="n">stock_alert</span> <span class="o">-=</span> <span class="nb">int</span><span class="p">(</span><span class="n">quantity</span><span class="p">)</span>
+        <span class="n">product</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">data</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GETProductSerializer">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GETProductSerializer">[docs]</a>
+<span class="k">class</span> <span class="nc">GETProductSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="n">brand</span> <span class="o">=</span> <span class="n">BrandSerializers</span><span class="p">()</span>
+    <span class="n">category</span> <span class="o">=</span> <span class="n">CategorySerializer</span><span class="p">()</span>
+    <span class="n">product_unit</span> <span class="o">=</span> <span class="n">UnitSerializer</span><span class="p">()</span>
+    <span class="n">created_by</span> <span class="o">=</span> <span class="n">UserSerializer</span><span class="p">()</span>
+    <span class="n">modified_by</span> <span class="o">=</span> <span class="n">UserSerializer</span><span class="p">()</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">UserSerializer</span><span class="p">()</span>
+    <span class="n">warehouse</span> <span class="o">=</span> <span class="n">WarehouseSerializer</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GETProductSerializer.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GETProductSerializer.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s2">&quot;__all__&quot;</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GetBarcodeSerializer">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GetBarcodeSerializer">[docs]</a>
+<span class="k">class</span> <span class="nc">GetBarcodeSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="n">information</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">()</span>
+
+<div class="viewcode-block" id="GetBarcodeSerializer.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GetBarcodeSerializer.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Barcode</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s2">&quot;__all__&quot;</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GetCategorySeralizer">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GetCategorySeralizer">[docs]</a>
+<span class="k">class</span> <span class="nc">GetCategorySeralizer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="n">created_by</span> <span class="o">=</span> <span class="n">UserSerializer</span><span class="p">()</span>
+    <span class="n">modified_by</span> <span class="o">=</span> <span class="n">UserSerializer</span><span class="p">()</span>
+
+<div class="viewcode-block" id="GetCategorySeralizer.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GetCategorySeralizer.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Category</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;created_by&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;modified_by&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;main_category&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sub_category&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GetUnitSeralizer">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GetUnitSeralizer">[docs]</a>
+<span class="k">class</span> <span class="nc">GetUnitSeralizer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="n">created_by</span> <span class="o">=</span> <span class="n">UserSerializer</span><span class="p">()</span>
+    <span class="n">modified_by</span> <span class="o">=</span> <span class="n">UserSerializer</span><span class="p">()</span>
+
+<div class="viewcode-block" id="GetUnitSeralizer.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GetUnitSeralizer.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Unit</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;created_by&quot;</span><span class="p">,</span> <span class="s2">&quot;modified_by&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_name&quot;</span><span class="p">,</span> <span class="s2">&quot;short_name&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GetBrandSeralizer">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GetBrandSeralizer">[docs]</a>
+<span class="k">class</span> <span class="nc">GetBrandSeralizer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="n">created_by</span> <span class="o">=</span> <span class="n">UserSerializer</span><span class="p">()</span>
+    <span class="n">modified_by</span> <span class="o">=</span> <span class="n">UserSerializer</span><span class="p">()</span>
+
+<div class="viewcode-block" id="GetBrandSeralizer.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GetBrandSeralizer.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Brand</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;created_by&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;modified_by&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;brand_name&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;brand_image&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GetAdjustmentSeralizer">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GetAdjustmentSeralizer">[docs]</a>
+<span class="k">class</span> <span class="nc">GetAdjustmentSeralizer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="n">product</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">()</span>
+    <span class="n">warehouse</span> <span class="o">=</span> <span class="n">WarehouseSerializer</span><span class="p">()</span>
+
+<div class="viewcode-block" id="GetAdjustmentSeralizer.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GetAdjustmentSeralizer.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Adjustment</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s2">&quot;__all__&quot;</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PurchaseSerializer">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.PurchaseSerializer">[docs]</a>
+<span class="k">class</span> <span class="nc">PurchaseSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+<div class="viewcode-block" id="PurchaseSerializer.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.PurchaseSerializer.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Purchase</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;warehouse&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;supplier&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;product&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;order_tax&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;order_discount&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;shipping&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sales_status&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;purchase_note&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GetPurachseSerializer">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GetPurachseSerializer">[docs]</a>
+<span class="k">class</span> <span class="nc">GetPurachseSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="n">warehouse</span> <span class="o">=</span> <span class="n">WarehouseSerializer</span><span class="p">()</span>
+    <span class="n">supplier</span> <span class="o">=</span> <span class="n">SupplierSerializer</span><span class="p">()</span>
+    <span class="n">product</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GetPurachseSerializer.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GetPurachseSerializer.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Purchase</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;warehouse&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;supplier&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;product&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;order_tax&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;order_discount&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;shipping&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sales_status&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;purchase_note&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SalesSerializer">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.SalesSerializer">[docs]</a>
+<span class="k">class</span> <span class="nc">SalesSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+<div class="viewcode-block" id="SalesSerializer.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.SalesSerializer.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Sales</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;customer&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;warehouse&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;biller&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;product&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sales_tax&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;discount&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;quantity&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;shipping&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sales_status&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;payment_status&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sales_image&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sales_note&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;staff_remark&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GetSalesSerializer">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GetSalesSerializer">[docs]</a>
+<span class="k">class</span> <span class="nc">GetSalesSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="n">warehouse</span> <span class="o">=</span> <span class="n">WarehouseSerializer</span><span class="p">()</span>
+    <span class="n">biller</span> <span class="o">=</span> <span class="n">BillerSerializer</span><span class="p">()</span>
+    <span class="n">customer</span> <span class="o">=</span> <span class="n">CustomerSerializer</span><span class="p">()</span>
+    <span class="n">product</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GetSalesSerializer.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GetSalesSerializer.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Sales</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;customer&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;warehouse&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;biller&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;product&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sales_tax&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;discount&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;shipping&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sales_status&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;payment_status&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sales_image&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sales_note&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;staff_remark&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PurchaseInvoiceSerializer">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.PurchaseInvoiceSerializer">[docs]</a>
+<span class="k">class</span> <span class="nc">PurchaseInvoiceSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+<div class="viewcode-block" id="PurchaseInvoiceSerializer.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.PurchaseInvoiceSerializer.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">PurchaseInvoice</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;warehouse&quot;</span><span class="p">,</span> <span class="s2">&quot;supplier&quot;</span><span class="p">,</span> <span class="s2">&quot;purchases&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GetPurchaseInvoiceSerializer">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GetPurchaseInvoiceSerializer">[docs]</a>
+<span class="k">class</span> <span class="nc">GetPurchaseInvoiceSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="n">warehouse</span> <span class="o">=</span> <span class="n">WarehouseSerializer</span><span class="p">()</span>
+    <span class="n">supplier</span> <span class="o">=</span> <span class="n">SupplierSerializer</span><span class="p">()</span>
+    <span class="n">purchases</span> <span class="o">=</span> <span class="n">PurchaseSerializer</span><span class="p">()</span>
+
+<div class="viewcode-block" id="GetPurchaseInvoiceSerializer.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GetPurchaseInvoiceSerializer.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">PurchaseInvoice</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s2">&quot;__all__&quot;</span></div>
+</div>
+
+
+<div class="viewcode-block" id="SalesInvoiceSerializer">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.SalesInvoiceSerializer">[docs]</a>
+<span class="k">class</span> <span class="nc">SalesInvoiceSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+<div class="viewcode-block" id="SalesInvoiceSerializer.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.SalesInvoiceSerializer.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">SalesInvoice</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;warehouse&quot;</span><span class="p">,</span> <span class="s2">&quot;supplier&quot;</span><span class="p">,</span> <span class="s2">&quot;sales&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GetSalesInvoiceSerializer">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GetSalesInvoiceSerializer">[docs]</a>
+<span class="k">class</span> <span class="nc">GetSalesInvoiceSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="n">warehouse</span> <span class="o">=</span> <span class="n">WarehouseSerializer</span><span class="p">()</span>
+    <span class="n">supplier</span> <span class="o">=</span> <span class="n">SupplierSerializer</span><span class="p">()</span>
+    <span class="n">sales</span> <span class="o">=</span> <span class="n">SalesSerializer</span><span class="p">()</span>
+
+<div class="viewcode-block" id="GetSalesInvoiceSerializer.Meta">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.serializers.GetSalesInvoiceSerializer.Meta">[docs]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">SalesInvoice</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s2">&quot;__all__&quot;</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Palistha.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -234,12 +234,14 @@ class SalesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sales
         fields = (
+            "id",
             "customer",
             "warehouse",
             "biller",
             "product",
             "sales_tax",
             "discount",
+            "quantity",
             "shipping",
             "sales_status",
             "payment_status",

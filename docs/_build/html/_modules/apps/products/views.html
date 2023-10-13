@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>apps.products.views &mdash; config 1.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            config
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">Inventory-system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apps.products.html">apps.products package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">config</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">apps.products.views</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for apps.products.views</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">rest_framework.viewsets</span> <span class="kn">import</span> <span class="n">ModelViewSet</span>
+<span class="kn">from</span> <span class="nn">apps.products.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Brand</span><span class="p">,</span>
+    <span class="n">Category</span><span class="p">,</span>
+    <span class="n">Product</span><span class="p">,</span>
+    <span class="n">Unit</span><span class="p">,</span>
+    <span class="n">Barcode</span><span class="p">,</span>
+    <span class="n">Purchase</span><span class="p">,</span>
+    <span class="n">Sales</span><span class="p">,</span>
+    <span class="n">PurchaseInvoice</span><span class="p">,</span>
+    <span class="n">SalesInvoice</span><span class="p">,</span>
+    <span class="n">Adjustment</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">apps.products.serializers</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BrandSerializers</span><span class="p">,</span>
+    <span class="n">CategorySerializer</span><span class="p">,</span>
+    <span class="n">ProductSerializer</span><span class="p">,</span>
+    <span class="n">GETProductSerializer</span><span class="p">,</span>
+    <span class="n">UnitSerializer</span><span class="p">,</span>
+    <span class="n">GetCategorySeralizer</span><span class="p">,</span>
+    <span class="n">GetUnitSeralizer</span><span class="p">,</span>
+    <span class="n">GetBrandSeralizer</span><span class="p">,</span>
+    <span class="n">BarcodeSerializer</span><span class="p">,</span>
+    <span class="n">GetBarcodeSerializer</span><span class="p">,</span>
+    <span class="n">PurchaseSerializer</span><span class="p">,</span>
+    <span class="n">SalesSerializer</span><span class="p">,</span>
+    <span class="n">GetPurachseSerializer</span><span class="p">,</span>
+    <span class="n">PurchaseInvoiceSerializer</span><span class="p">,</span>
+    <span class="n">AdjustmentSerializer</span><span class="p">,</span>
+    <span class="n">GetAdjustmentSeralizer</span><span class="p">,</span>
+    <span class="n">GetSalesSerializer</span><span class="p">,</span>
+    <span class="n">GetPurchaseInvoiceSerializer</span><span class="p">,</span>
+    <span class="n">SalesInvoiceSerializer</span><span class="p">,</span>
+    <span class="n">GetSalesInvoiceSerializer</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">apps.products.pagination</span> <span class="kn">import</span> <span class="n">Pagination</span>
+<span class="kn">from</span> <span class="nn">django_filters.rest_framework</span> <span class="kn">import</span> <span class="n">DjangoFilterBackend</span>
+<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">filters</span>
+<span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
+<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">status</span>
+<span class="c1"># from utils.permissions import SupplierPermssion</span>
+<span class="kn">from</span> <span class="nn">rest_framework.permissions</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AllowAny</span><span class="p">,</span>
+    <span class="n">IsAdminUser</span><span class="p">,</span>
+    <span class="n">IsAuthenticated</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">import</span> <span class="nn">barcode</span>
+<span class="kn">from</span> <span class="nn">barcode.writer</span> <span class="kn">import</span> <span class="n">ImageWriter</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Sum</span>
+
+
+<span class="c1"># Create your views here.</span>
+<div class="viewcode-block" id="MyPagination">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.MyPagination">[docs]</a>
+<span class="k">class</span> <span class="nc">MyPagination</span><span class="p">(</span><span class="n">ModelViewSet</span><span class="p">):</span>
+    <span class="n">pagination_class</span> <span class="o">=</span> <span class="n">Pagination</span></div>
+
+
+
+<div class="viewcode-block" id="BrandViewSet">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.BrandViewSet">[docs]</a>
+<span class="k">class</span> <span class="nc">BrandViewSet</span><span class="p">(</span><span class="n">MyPagination</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Brand</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">BrandSerializers</span>
+    <span class="n">http_method_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;get&quot;</span><span class="p">,</span> <span class="s2">&quot;post&quot;</span><span class="p">,</span> <span class="s2">&quot;put&quot;</span><span class="p">,</span> <span class="s2">&quot;delete&quot;</span><span class="p">]</span>
+    <span class="n">filter_backends</span> <span class="o">=</span> <span class="p">[</span><span class="n">DjangoFilterBackend</span><span class="p">]</span>
+    <span class="n">filterset_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;brand_name&quot;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="BrandViewSet.create">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.BrandViewSet.create">[docs]</a>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">serializers</span> <span class="o">=</span> <span class="n">BrandSerializers</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">serializers</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">raise_exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">serializers</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">created_by</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="n">modified_by</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_201_CREATED</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BrandViewSet.update">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.BrandViewSet.update">[docs]</a>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">serializers</span> <span class="o">=</span> <span class="n">BrandSerializers</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">serializers</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">raise_exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">serializers</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">modified_by</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_201_CREATED</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BrandViewSet.get_serializer_class">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.BrandViewSet.get_serializer_class">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_serializer_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;retrieve&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">GetBrandSeralizer</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_serializer_class</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CategoryViewSet">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.CategoryViewSet">[docs]</a>
+<span class="k">class</span> <span class="nc">CategoryViewSet</span><span class="p">(</span><span class="n">MyPagination</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Category</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">CategorySerializer</span>
+    <span class="n">http_method_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;get&quot;</span><span class="p">,</span> <span class="s2">&quot;post&quot;</span><span class="p">,</span> <span class="s2">&quot;delete&quot;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="CategoryViewSet.create">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.CategoryViewSet.create">[docs]</a>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">serializers</span> <span class="o">=</span> <span class="n">CategorySerializer</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">serializers</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">raise_exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">serializers</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">created_by</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="n">modified_by</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_201_CREATED</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CategoryViewSet.get_serializer_class">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.CategoryViewSet.get_serializer_class">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_serializer_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;retrieve&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">GetCategorySeralizer</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_serializer_class</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="UnitViewSet">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.UnitViewSet">[docs]</a>
+<span class="k">class</span> <span class="nc">UnitViewSet</span><span class="p">(</span><span class="n">ModelViewSet</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Unit</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">UnitSerializer</span>
+    <span class="n">http_method_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;get&quot;</span><span class="p">,</span> <span class="s2">&quot;post&quot;</span><span class="p">,</span> <span class="s2">&quot;put&quot;</span><span class="p">,</span> <span class="s2">&quot;patch&quot;</span><span class="p">,</span> <span class="s2">&quot;delete&quot;</span><span class="p">]</span>
+    <span class="c1"># permission_classes = [IsUserAdmin]</span>
+    <span class="n">filter_backends</span> <span class="o">=</span> <span class="p">[</span><span class="n">filters</span><span class="o">.</span><span class="n">SearchFilter</span><span class="p">,</span> <span class="n">filters</span><span class="o">.</span><span class="n">OrderingFilter</span><span class="p">]</span>
+    <span class="n">search_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;=short_name&quot;</span><span class="p">]</span>
+    <span class="n">ordering_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;short_name&quot;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="UnitViewSet.create">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.UnitViewSet.create">[docs]</a>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">serializers</span> <span class="o">=</span> <span class="n">UnitSerializer</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">serializers</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">raise_exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">serializers</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">created_by</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_201_CREATED</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UnitViewSet.get_serializer_class">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.UnitViewSet.get_serializer_class">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_serializer_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;retrieve&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">GetUnitSeralizer</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_serializer_class</span><span class="p">()</span></div>
+</div>
+
+
+
+
+<div class="viewcode-block" id="ProductViewSet">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.ProductViewSet">[docs]</a>
+<span class="k">class</span> <span class="nc">ProductViewSet</span><span class="p">(</span><span class="n">ModelViewSet</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ProductSerializer</span>
+    <span class="n">http_method_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;get&quot;</span><span class="p">,</span> <span class="s2">&quot;post&quot;</span><span class="p">,</span> <span class="s2">&quot;put&quot;</span><span class="p">,</span> <span class="s2">&quot;patch&quot;</span><span class="p">,</span> <span class="s2">&quot;delete&quot;</span><span class="p">]</span>
+    <span class="n">filter_backends</span> <span class="o">=</span> <span class="p">[</span><span class="n">DjangoFilterBackend</span><span class="p">]</span>
+    <span class="n">filterset_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;created_by&quot;</span><span class="p">]</span>
+    <span class="n">permission_classes_by_action</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;list&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">AllowAny</span><span class="p">],</span>
+        <span class="s2">&quot;retrieve&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">IsAuthenticated</span><span class="p">],</span>
+        <span class="c1"># &quot;create&quot;: [IsAdminUser | SupplierPermssion],</span>
+        <span class="c1"># &quot;update&quot;: [IsAuthenticated | SupplierPermssion],</span>
+    <span class="p">}</span>
+
+<div class="viewcode-block" id="ProductViewSet.get_permissions">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.ProductViewSet.get_permissions">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span>
+                <span class="n">permission</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">permission</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">permission_classes_by_action</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">]</span>
+            <span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">permission</span><span class="p">()</span> <span class="k">for</span> <span class="n">permission</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">permission_classes</span><span class="p">]</span></div>
+
+
+    <span class="c1"># def create_or_update_warehouse(self, warehouses):</span>
+    <span class="c1">#     warehouse_ids = []</span>
+    <span class="c1">#     # print(warehouses)</span>
+    <span class="c1">#     for warehouse in warehouses:</span>
+    <span class="c1">#         warehouse_instance, created = Warehouse.objects.update_or_create(</span>
+    <span class="c1">#             id=warehouse.get(&quot;id&quot;), defaults=warehouse</span>
+    <span class="c1">#         )</span>
+    <span class="c1">#         warehouse_ids.append(warehouse_instance.id)</span>
+    <span class="c1">#     return warehouse_ids</span>
+
+    <span class="c1"># def partial_update(self, request, *args, **kwargs):</span>
+    <span class="c1">#     instance = self.get_object()</span>
+    <span class="c1">#     warehouse_data = request.data.pop(&quot;warehouse&quot;)</span>
+    <span class="c1">#     warehouse = self.create_or_update_warehouse(warehouse_data)</span>
+    <span class="c1">#     instance.warehouse.set(warehouse)</span>
+    <span class="c1">#     serializer = ProductSerializer(instance)</span>
+    <span class="c1">#     return Response(serializer.data)</span>
+
+    <span class="c1"># def partial_update(self, request, *args, **kwargs):</span>
+    <span class="c1">#     instance = self.get_object()</span>
+    <span class="c1">#     warehouse_data = request.data.pop(&quot;warehouse&quot;)</span>
+    <span class="c1">#     warehouse_ids_list = []</span>
+    <span class="c1">#     for warehouse in warehouse_data:</span>
+    <span class="c1">#         warehouse_instance = Warehouse.objects.get(id = warehouse)</span>
+
+    <span class="c1">#         warehouse_ids_list.append(warehouse_instance.id)</span>
+    <span class="c1">#     instance.warehouse.set(warehouse_ids_list)</span>
+    <span class="c1">#     serializer = ProductSerializer(instance)</span>
+
+    <span class="c1">#     return Response({&quot;updated data&quot; : serializer.data})</span>
+
+<div class="viewcode-block" id="ProductViewSet.get_serializer_class">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.ProductViewSet.get_serializer_class">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_serializer_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;retrieve&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">GETProductSerializer</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_serializer_class</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="BarcodeViewset">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.BarcodeViewset">[docs]</a>
+<span class="k">class</span> <span class="nc">BarcodeViewset</span><span class="p">(</span><span class="n">ModelViewSet</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Barcode</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">BarcodeSerializer</span>
+
+<div class="viewcode-block" id="BarcodeViewset.create">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.BarcodeViewset.create">[docs]</a>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">product_information</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;information&quot;</span><span class="p">)</span>
+        <span class="n">get_current_product</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">product_information</span><span class="p">)</span>
+        <span class="n">get_current_product_code</span> <span class="o">=</span> <span class="n">get_current_product</span><span class="o">.</span><span class="n">product_code</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">get_current_product_code</span><span class="p">:</span>
+            <span class="c1"># print(product_infromation.product_code)</span>
+            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span>
+                <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Product code is required.&quot;</span><span class="p">},</span>
+                <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">barcode_class</span> <span class="o">=</span> <span class="n">barcode</span><span class="o">.</span><span class="n">get_barcode_class</span><span class="p">(</span><span class="s2">&quot;code128&quot;</span><span class="p">)</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="n">barcode_class</span><span class="p">(</span><span class="n">get_current_product_code</span><span class="p">,</span> <span class="n">writer</span><span class="o">=</span><span class="n">ImageWriter</span><span class="p">())</span>
+
+        <span class="n">unique_filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;barcode_</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="n">directory_path</span> <span class="o">=</span> <span class="s2">&quot;barcode-image/&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">directory_path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">directory_path</span><span class="p">)</span>
+        <span class="n">barcode_image</span> <span class="o">=</span> <span class="n">code</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;barcode-image/</span><span class="si">{</span><span class="n">unique_filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">serializer</span> <span class="o">=</span> <span class="n">BarcodeSerializer</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">raise_exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">barcode_image</span><span class="o">=</span><span class="n">barcode_image</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_201_CREATED</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BarcodeViewset.get_serializer_class">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.BarcodeViewset.get_serializer_class">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_serializer_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;retrieve&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">GetBarcodeSerializer</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_serializer_class</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AdjustmentViewset">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.AdjustmentViewset">[docs]</a>
+<span class="k">class</span> <span class="nc">AdjustmentViewset</span><span class="p">(</span><span class="n">ModelViewSet</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Adjustment</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">AdjustmentSerializer</span>
+
+<div class="viewcode-block" id="AdjustmentViewset.create">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.AdjustmentViewset.create">[docs]</a>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">serializer</span> <span class="o">=</span> <span class="n">AdjustmentSerializer</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">raise_exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">serializer</span><span class="o">.</span><span class="n">validated_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;quantity&#39;</span><span class="p">)</span>
+        <span class="n">adjustment</span> <span class="o">=</span> <span class="n">Adjustment</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="o">**</span><span class="n">serializer</span><span class="o">.</span><span class="n">validated_data</span><span class="p">)</span>
+        <span class="n">serializer</span> <span class="o">=</span> <span class="n">AdjustmentSerializer</span><span class="p">(</span><span class="n">adjustment</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">({</span><span class="s2">&quot;data&quot;</span> <span class="p">:</span> <span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">})</span> </div>
+
+    
+<div class="viewcode-block" id="AdjustmentViewset.get_serializer_class">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.AdjustmentViewset.get_serializer_class">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_serializer_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;retrieve&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">GetAdjustmentSeralizer</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_serializer_class</span><span class="p">()</span></div>
+</div>
+
+    
+<div class="viewcode-block" id="PurchaseViewSet">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.PurchaseViewSet">[docs]</a>
+<span class="k">class</span> <span class="nc">PurchaseViewSet</span><span class="p">(</span><span class="n">ModelViewSet</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Purchase</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">PurchaseSerializer</span>
+
+<div class="viewcode-block" id="PurchaseViewSet.get_serializer_class">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.PurchaseViewSet.get_serializer_class">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_serializer_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;retrieve&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">GetPurachseSerializer</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_serializer_class</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SalesViewSet">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.SalesViewSet">[docs]</a>
+<span class="k">class</span> <span class="nc">SalesViewSet</span><span class="p">(</span><span class="n">ModelViewSet</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Sales</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">SalesSerializer</span>
+
+<div class="viewcode-block" id="SalesViewSet.get_serializer_class">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.SalesViewSet.get_serializer_class">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_serializer_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;retrieve&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">GetSalesSerializer</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_serializer_class</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="SalesViewSet.create">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.SalesViewSet.create">[docs]</a>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span>
+        <span class="c1"># import pdb;pdb.set_trace()</span>
+        <span class="n">serializer</span> <span class="o">=</span> <span class="n">SalesSerializer</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">raise_exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">product_data</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;product&quot;</span><span class="p">]:</span>                
+            <span class="n">get_product_by_id</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">product_data</span><span class="p">)</span>
+            <span class="n">required_quantity</span> <span class="o">=</span> <span class="n">get_product_by_id</span><span class="o">.</span><span class="n">stock_alert</span>
+
+            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;quantity&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">required_quantity</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Response</span><span class="p">({</span><span class="s1">&#39;errors&#39;</span> <span class="p">:</span> <span class="s1">&#39;total quantiy is greater than required quantity.&#39;</span><span class="p">})</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">pass</span>
+        
+        <span class="k">return</span> <span class="n">Response</span><span class="p">({</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;success sales&quot;</span><span class="p">},</span><span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">)</span></div>
+</div>
+
+
+<div class="viewcode-block" id="PurchaseInvoiceViewSet">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.PurchaseInvoiceViewSet">[docs]</a>
+<span class="k">class</span> <span class="nc">PurchaseInvoiceViewSet</span><span class="p">(</span><span class="n">ModelViewSet</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">PurchaseInvoice</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">PurchaseInvoiceSerializer</span>
+
+<div class="viewcode-block" id="PurchaseInvoiceViewSet.get_serializer_class">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.PurchaseInvoiceViewSet.get_serializer_class">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_serializer_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;retrieve&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">GetPurchaseInvoiceSerializer</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_serializer_class</span><span class="p">()</span></div>
+</div>
+
+    
+<div class="viewcode-block" id="SalesInvoiceViewSet">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.SalesInvoiceViewSet">[docs]</a>
+<span class="k">class</span> <span class="nc">SalesInvoiceViewSet</span><span class="p">(</span><span class="n">ModelViewSet</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">SalesInvoice</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">SalesInvoiceSerializer</span>
+
+<div class="viewcode-block" id="SalesInvoiceViewSet.get_serializer_class">
+<a class="viewcode-back" href="../../../apps.products.html#apps.products.views.SalesInvoiceViewSet.get_serializer_class">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_serializer_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;retrieve&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">GetSalesInvoiceSerializer</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_serializer_class</span><span class="p">()</span></div>
+</div>
+
+
+
+    
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Palistha.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

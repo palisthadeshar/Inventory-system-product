@@ -26,7 +26,7 @@ from utils.pagination import MyPagination
 from utils.emails import send_otp_email
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import AllowAny
-from utils.permissions import CustomerPermssion, SupplierPermssion
+# from utils.permissions import CustomerPermssion, SupplierPermssion
 from apps.accounts.utils import generate_otp
 from apps.accounts.models import OTP
 from decouple import config
@@ -124,7 +124,7 @@ class CustomerViewSet(CommonModelViewset):
     search_fields = ["username"]
     permission_classes_by_action = {
         "list": [AllowAny],
-        "retrieve": [IsAuthenticated | CustomerPermssion],
+        "retrieve": [IsAuthenticated ],
         "create": [IsAdminUser],
         "update": [IsAuthenticated],
     }
@@ -170,7 +170,7 @@ class SupplierViewSet(CommonModelViewset):
     search_fields = ["username"]
     permission_classes_by_action = {
         "list": [AllowAny],
-        "retrieve": [IsAuthenticated | SupplierPermssion],
+        "retrieve": [IsAuthenticated],
         "create": [IsAdminUser],
         "update": [IsAuthenticated],
     }
@@ -193,12 +193,12 @@ class SupplierViewSet(CommonModelViewset):
 
         supplier_serializer = SupplierSerializer(data={**request.data})
 
-        SUPPLIER_PREFIX = config("SUPPLIER_PREFIX", default="")
+        # SUPPLIER_PREFIX = config("SUPPLIER_PREFIX", default="")
         if supplier_serializer.is_valid():
             supplier_serializer.save(
                 user=user,
                 created_by=request.user,
-                supplier_code=f"{SUPPLIER_PREFIX}{Supplier.objects.count()}",
+                # supplier_code=f"{SUPPLIER_PREFIX}{Supplier.objects.count()}",
             )
             return Response(supplier_serializer.data, status=status.HTTP_201_CREATED)
         else:
